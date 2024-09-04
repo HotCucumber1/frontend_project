@@ -1,19 +1,61 @@
+function parseExpression(expression: string): string[]
+{
+    const DIGITS: string = "0123456789"
+    let expressionElements: string[] = [];
+    let currentNumber: string = "";
+    for (let i = 0; i < expression.length; i++)
+    {
+        if (DIGITS.indexOf(expression[i]) > 0)
+        {
+            currentNumber += expression[i];
+        }
+        else
+        {
+            if (currentNumber !== "")
+            {
+                expressionElements.push(currentNumber);
+                currentNumber = "";
+            }
+            if (expression[i] !== " ")
+            {
+                expressionElements.push(expression[i]);
+            }
+        }
+    }
+    if (currentNumber !== "")
+    {
+        expressionElements.push(currentNumber);
+    }
+    return expressionElements;
+}
+
+
 function calc(expression: string): number
 {
     let brackets: number = 0;
     let stack: number[] = [];
-    let expressionElements: string[] = expression.split(/\s+/).reverse()
-    // решить вопрос со скобками
+    let expressionElements: string[] = parseExpression(expression).reverse();
 
-    expressionElements.forEach(element => {
+    let element: string;
+    for (let i = 0; i < expressionElements.length; i++)
+    {
+        element = expressionElements[i];
         if (brackets < 0)
         {
-            console.log('Неверное расположение скобок');
+            console.log("Неверное расположение скобок");
             return NaN;
         }
         if (!isNaN(Number(element)))
         {
             stack.push(Number(element));
+        }
+        else if (element === '(')
+        {
+            brackets--;
+        }
+        else if (element === ')')
+        {
+            brackets++;
         }
         else
         {
@@ -33,30 +75,31 @@ function calc(expression: string): number
                 case '/':
                     stack.push(first / second);
                     break;
-                case '(':
-                    brackets++;
-                    break;
-                case ')':
-                    brackets--;
-                    break;
                 default:
                     console.log(`Символ ${element} не число и не действие`);
                     return NaN;
             }
         }
-
-    });
+    }
     if (brackets !== 0)
     {
-        return stack.pop();
+        console.log("Количество открывающих и закрывающих скобок не совпадает");
+        return NaN;
     }
-    console.log(`Неверное расположение скобок`);
-    return NaN;
+    if (stack.length !== 1)
+    {
+        return NaN;
+    }
+    return stack.pop();
 }
 
-const EXPRESSION = "* ( − 5 6 ) 7";
+const EXPRESSION = "*(- 5 6) 7";
 let result = calc(EXPRESSION);
 if (!isNaN(result))
 {
     console.log(result);
+}
+else
+{
+    console.log("Количество чисел и действий не совпадает");
 }
