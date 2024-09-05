@@ -2,7 +2,7 @@
   "name": "slide_maker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "objects.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
