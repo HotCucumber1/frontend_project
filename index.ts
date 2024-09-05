@@ -93,8 +93,9 @@ function calc(expression: string): number
     return stack.pop();
 }
 
-const EXPRESSION = "*(- 5 6) 7";
-let result = calc(EXPRESSION);
+const EXPRESSION_1 = "*(/(+2 2)(- 6 4)) 7";
+const EXPRESSION_2 = "- * / 15 - 7 + 1 1 3 + 2 + 1 1";
+let result = calc(EXPRESSION_1);
 if (!isNaN(result))
 {
     console.log(result);
