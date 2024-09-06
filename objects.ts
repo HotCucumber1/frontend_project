@@ -1,26 +1,19 @@
-const START_ANGLE = 0;
+const START_ANGLE = 90;
 
 type Presentation = {
     title: string;
     slides: Slide[];
     currentSlide: number;
+    selectedSlides: number[];
     // history: number[];
 }
-//  TODO: подумать с типами, SlideCollection
+//  TODO: подумать с типам, isSelected, position
 
 type Slide = {
     background: Color|Gradient|Image;
     content: SlideContent[];
     position: number;
-    isSelected: boolean;
-}
-
-type SlideSelection = {
-    selectedSlides: Slide[];
-}
-
-type ContentSelection = {
-    selectedObjects: SlideContent[];
+    selectedContent: number[];
 }
 
 type SlideContent = {
@@ -45,10 +38,6 @@ type Figure = {
     pos: Point;
     size: Size;
 }
-
-// type Background = {
-//     context: Color|Gradient|Image;
-// }
 
 type Gradient = {
     colors: Color[];
@@ -92,8 +81,9 @@ function addSlide(presentation: Presentation): Presentation
         },
         content: [],
         position: presentation.currentSlide + 1,
-        isSelected: false,
+        selectedContent: [],
     }
+    // TODO: нужно двигать все остальные слайды
 
     return {
         ...presentation,
@@ -103,6 +93,7 @@ function addSlide(presentation: Presentation): Presentation
 
 function deleteSlides(presentation: Presentation): Presentation
 {
+    // TODO: исправить (удалять выделенные слайды)
     return  {
         ...presentation,
         slides: presentation.slides.filter(slide => !slide.isSelected),
@@ -111,6 +102,7 @@ function deleteSlides(presentation: Presentation): Presentation
 
 function setSlidePosition(slide: Slide, newPosition: number): Slide
 {
+    // TODO: нужно двигать все остальные слайды
     return {
         ...slide,
         position: newPosition,
