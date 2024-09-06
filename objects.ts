@@ -1,18 +1,20 @@
 const START_ANGLE = 90;
+// TODO: убрать position слайда, ввести id, в презентацию добавить стартовый id
 
 type Presentation = {
     title: string;
     slides: Slide[];
     currentSlide: number;
     selectedSlides: number[];
+    currentSlideId: number;
     // history: number[];
 }
 //  TODO: подумать с типам, position
 
 type Slide = {
+    id: number;
     background: Color|Gradient|Image;
     content: SlideContent[];
-    position: number;
     selectedContent: number[];
 }
 
@@ -77,11 +79,11 @@ function setTitle(presentation: Presentation, newTitle: string): Presentation
 function addSlide(presentation: Presentation): Presentation
 {
     const newSlide: Slide = {
+        id: presentation.currentSlideId++,
         background: {
             value: "white",
         },
         content: [],
-        position: presentation.currentSlide + 1,
         selectedContent: [],
     }
     // TODO: нужно двигать все остальные слайды
@@ -94,20 +96,15 @@ function addSlide(presentation: Presentation): Presentation
 
 function deleteSlides(presentation: Presentation): Presentation
 {
-    // TODO: двигать все остальные слайды
     return  {
         ...presentation,
-        slides: presentation.slides.filter(slide => !presentation.selectedSlides.indexOf(slide.position)),
+        slides: presentation.slides.filter(slide => !presentation.selectedSlides.indexOf(slide.id)),
     }
 }
 
 function setSlidePosition(slide: Slide, newPosition: number): Slide
 {
     // TODO: нужно двигать все остальные слайды
-    return {
-        ...slide,
-        position: newPosition,
-    }
 }
 
 function addSlideText(slide: Slide, newText: TextContent, coords: Point, size: Size): Slide
