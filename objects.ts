@@ -7,7 +7,7 @@ type Presentation = {
     selectedSlides: number[];
     // history: number[];
 }
-//  TODO: подумать с типам, isSelected, position
+//  TODO: подумать с типам, position
 
 type Slide = {
     background: Color|Gradient|Image;
@@ -37,6 +37,7 @@ type Figure = {
     color: Color;
     pos: Point;
     size: Size;
+    // TODO: добавить фигуры и path (фигурам предусмотреть контур, заливку, толщину контура, замкнутость)
 }
 
 type Gradient = {
@@ -93,10 +94,10 @@ function addSlide(presentation: Presentation): Presentation
 
 function deleteSlides(presentation: Presentation): Presentation
 {
-    // TODO: исправить (удалять выделенные слайды)
+    // TODO: двигать все остальные слайды
     return  {
         ...presentation,
-        slides: presentation.slides.filter(slide => !slide.isSelected),
+        slides: presentation.slides.filter(slide => !presentation.selectedSlides.indexOf(slide.position)),
     }
 }
 
