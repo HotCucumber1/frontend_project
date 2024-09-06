@@ -7,6 +7,7 @@ type Presentation = {
     background: Color|Gradient|Image;
     // history: number[];
 }
+//  TODO: подумать с типами, типом Bg, Bg презентации, SlideCollection
 
 type SlideCollection = {
     slides: Slide[];
