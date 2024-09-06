@@ -4,10 +4,9 @@ type Presentation = {
     title: string;
     slides: SlideCollection;
     currentSlide: number;
-    background: Color|Gradient|Image;
     // history: number[];
 }
-//  TODO: подумать с типами, типом Bg, Bg презентации, SlideCollection
+//  TODO: подумать с типами, типом Bg, SlideCollection
 
 type SlideCollection = {
     slides: Slide[];
@@ -30,7 +29,6 @@ type ContentSelection = {
 
 type SlideContent = {
     id: number;
-    type: string;
     context: TextContent|Image|Figure;
     pos: Point;
     size: Size;
@@ -133,7 +131,6 @@ function addSlideText(slide: Slide, newText: TextContent, coords: Point, size: S
 {
     const newContent: SlideContent = {
         id: slide.content[slide.content.length - 1].id + 1,
-        type: "text",
         context: newText,
         pos: coords,
         size: size,
