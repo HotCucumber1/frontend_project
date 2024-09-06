@@ -2,15 +2,11 @@ const START_ANGLE = 0;
 
 type Presentation = {
     title: string;
-    slides: SlideCollection;
+    slides: Slide[];
     currentSlide: number;
     // history: number[];
 }
-//  TODO: подумать с типами, типом Bg, SlideCollection
-
-type SlideCollection = {
-    slides: Slide[];
-}
+//  TODO: подумать с типами, SlideCollection
 
 type Slide = {
     background: Color|Gradient|Image;
@@ -20,7 +16,7 @@ type Slide = {
 }
 
 type SlideSelection = {
-    selectedSlides: SlideCollection;
+    selectedSlides: Slide[];
 }
 
 type ContentSelection = {
@@ -98,24 +94,18 @@ function addSlide(presentation: Presentation): Presentation
         position: presentation.currentSlide + 1,
         isSelected: false,
     }
-    const newSlides: SlideCollection = {
-        slides: [...presentation.slides.slides, newSlide]
-    }
 
     return {
         ...presentation,
-        slides: newSlides,
+        slides: [...presentation.slides, newSlide],
     }
 }
 
 function deleteSlides(presentation: Presentation): Presentation
 {
-    const newSlides: SlideCollection = {
-        slides: presentation.slides.slides.filter(slide => !slide.isSelected)
-    };
     return  {
         ...presentation,
-        slides: newSlides,
+        slides: presentation.slides.filter(slide => !slide.isSelected),
     }
 }
 
@@ -211,11 +201,8 @@ function setSlideBackground(slide: Slide, newBackground: Color|Image|Gradient): 
 
 function setPresentationBackground(presentation: Presentation, newBackground: Color|Image|Gradient): Presentation
 {
-    const newSlides: SlideCollection = {
-        slides: presentation.slides.slides.map(slide => setSlideBackground(slide, newBackground)),
-    }
     return {
         ...presentation,
-        slides: newSlides,
+        slides: presentation.slides.map(slide => setSlideBackground(slide, newBackground)),
     }
 }
