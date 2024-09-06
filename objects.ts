@@ -4,7 +4,7 @@ type Presentation = {
     title: string;
     slides: SlideCollection;
     currentSlide: number;
-    background: Background;
+    background: Color|Gradient|Image;
     // history: number[];
 }
 
@@ -13,7 +13,7 @@ type SlideCollection = {
 }
 
 type Slide = {
-    background: Background;
+    background: Color|Gradient|Image;
     content: SlideContent[];
     position: number;
     isSelected: boolean;
@@ -51,9 +51,9 @@ type Figure = {
     size: Size;
 }
 
-type Background = {
-    context: Color|Gradient|Image;
-}
+// type Background = {
+//     context: Color|Gradient|Image;
+// }
 
 type Gradient = {
     colors: Color[];
@@ -93,9 +93,7 @@ function addSlide(presentation: Presentation): Presentation
 {
     const newSlide: Slide = {
         background: {
-            context: {
-                value: "white",
-            }
+            value: "white",
         },
         content: [],
         position: presentation.currentSlide + 1,
@@ -205,24 +203,18 @@ function setFontStyle(content: TextContent, newFontStyle: string): TextContent
     }
 }
 
-function setSlideBackground(slide: Slide, background: Color|Image|Gradient): Slide
+function setSlideBackground(slide: Slide, newBackground: Color|Image|Gradient): Slide
 {
-    const newBackground: Background = {
-        context: background,
-    }
     return {
         ...slide,
         background: newBackground,
     }
 }
 
-function setPresentationBackground(presentation: Presentation, background: Color|Image|Gradient): Presentation
+function setPresentationBackground(presentation: Presentation, newBackground: Color|Image|Gradient): Presentation
 {
-    const newBackground: Background = {
-        context: background,
-    }
     const newSlides: SlideCollection = {
-        slides: presentation.slides.slides.map(slide => setSlideBackground(slide, newBackground.context)),
+        slides: presentation.slides.slides.map(slide => setSlideBackground(slide, newBackground)),
     }
     return {
         ...presentation,
