@@ -1,3 +1,6 @@
+import { v4 as uuidv4 } from "uuid";
+
+
 type Presentation = {
     title: string;
     slides: Slide[];
