@@ -29,7 +29,7 @@ type TextObject = SlideObject & {
     text: string;
     fontSize: number;
     fontFamily: string;
-    fontStyle: string;
+    fontStyle: "italic"|"bold"|"underline";
     color: Color;
 }
 
@@ -69,7 +69,7 @@ type Size = {
     height: number;
 }
 
-function setTitle(presentation: Presentation, newTitle: string): Presentation
+function setPresentationTitle(presentation: Presentation, newTitle: string): Presentation
 {
     return {
         ...presentation,
@@ -80,15 +80,14 @@ function setTitle(presentation: Presentation, newTitle: string): Presentation
 function addSlide(presentation: Presentation): Presentation
 {
     const newSlide: Slide = {
-        id: presentation.currentSlideId++,
+        id: uuidv4(),
         background: {
             value: "white",
+            type: "color",
         },
         content: [],
-        selectedContent: [],
+        selectedObjects: [],
     }
-    // TODO: нужно двигать все остальные слайды
-
     return {
         ...presentation,
         slides: [...presentation.slides, newSlide],
@@ -103,49 +102,79 @@ function deleteSlides(presentation: Presentation): Presentation
     }
 }
 
-function setSlidePosition(slide: Slide, newPosition: number): Slide
+function setSlidePosition(presentation: Presentation, slide: Slide, newPosition: number): Presentation
 {
-    // TODO: нужно двигать все остальные слайды
+    const oldSlidePosition: number = presentation.slides.indexOf(slide);
+    const newSlides: Slide[] = presentation.slides.slice();
+    const [oneSlide] = presentation.slides.slice().splice(oldSlidePosition, 1);
+
+    newSlides.splice(newPosition, 0, oneSlide);
+    return {
+        ...presentation,
+        slides: newSlides,
+    }
 }
 
-function addSlideText(slide: Slide, newText: TextObject, coords: Point, size: Size): Slide
+function addTextToSlide(slide: Slide,
+                        text: string,
+                        position: Point,
+                        size: Size,
+                        fontSize: number,
+                        fontFamily: string,
+                        fontStyle: "italic"|"bold"|"underline",
+                        color: Color): Slide
 {
-    const newContent: SlideObject = {
-        id: slide.content[slide.content.length - 1].id + 1,
-        context: newText,
-        pos: coords,
+    const textObject: TextObject = {
+        id: uuidv4(),
+        pos: position,
         size: size,
-        angle: START_ANGLE,
-        isSelected: true,
-    };
-
+        text: text,
+        fontSize: fontSize,
+        fontFamily: fontFamily,
+        fontStyle: fontStyle,
+        color: color
+    }
     return {
         ...slide,
-        content: [...slide.content, newContent],
+        content: [...slide.content, textObject],
     }
 }
 
-function deleteSlideText(slide: Slide): Slide
+function addImageToSlide(slide: Slide, position: Point, size: Size, src: string, alt: string): Slide
 {
-    const newContent = slide.content.filter(item => !item.isSelected);
+    const imageObject: ImageObject = {
+        id: uuidv4(),
+        pos: position,
+        size: size,
+        src: src,
+        alt: alt,
+    }
     return {
         ...slide,
-        content: newContent,
+        content: [...slide.content, imageObject],
     }
 }
 
-function setContentPosition(content: SlideObject, newPos: Point): SlideObject
+function deleteSlideObject(slide: Slide): Slide
 {
     return {
-        ...content,
-        pos: newPos,
+        ...slide,
+        content: slide.content.filter(object => !slide.selectedObjects.indexOf(object.id))
     }
 }
 
-function setContentSize(content: SlideObject, newSize: Size): SlideObject
+function setObjectPosition(object: SlideObject, newPosition: Point): SlideObject
 {
     return {
-        ...content,
+        ...object,
+        pos: newPosition,
+    }
+}
+
+function setObjectSize(object: SlideObject, newSize: Size): SlideObject
+{
+    return {
+        ...object,
         size: newSize,
     }
 }
@@ -154,7 +183,7 @@ function setText(content: TextObject, newText: string): TextObject
 {
     return {
         ...content,
-        text: newText
+        text: newText,
     }
 }
 
@@ -174,7 +203,7 @@ function setFontFamily(content: TextObject, newFontFamily: string): TextObject
     }
 }
 
-function setFontStyle(content: TextObject, newFontStyle: string): TextObject
+function setFontStyle(content: TextObject, newFontStyle: "italic"|"bold"|"underline"): TextObject
 {
     return {
         ...content,
