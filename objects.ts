@@ -1,33 +1,28 @@
-const START_ANGLE = 90;
-// TODO: убрать position слайда, ввести id, в презентацию добавить стартовый id
-
 type Presentation = {
     title: string;
     slides: Slide[];
-    currentSlide: number;
-    selectedSlides: number[];
-    currentSlideId: number;
-    // history: number[];
+    selectedSlides: string[];
 }
-//  TODO: подумать с типам, position
 
 type Slide = {
-    id: number;
+    id: string;
     background: Color|Gradient|Image;
-    content: SlideContent[];
-    selectedContent: number[];
+    content: Array<TextObject|ImageObject|FigureObject>;
+    selectedObjects: string[];
 }
 
-type SlideContent = {
-    id: number;
-    context: TextContent|Image|Figure;
+type SlideObject = {
+    id: string;
     pos: Point;
     size: Size;
-    angle: number;
-    isSelected: boolean;
 }
 
-type TextContent = {
+type ImageObject = SlideObject & {
+    src: string;
+    alt: string;
+}
+
+type TextObject = SlideObject & {
     text: string;
     fontSize: number;
     fontFamily: string;
@@ -35,27 +30,30 @@ type TextContent = {
     color: Color;
 }
 
-type Figure = {
-    color: Color;
-    pos: Point;
-    size: Size;
-    // TODO: добавить фигуры и path (фигурам предусмотреть контур, заливку, толщину контура, замкнутость)
+type FigureObject = SlideObject & {
+    fillStyle: Color|Gradient;
+    strokeStyle: Color;
+    strokeWidth: number;
+}
+
+type PathFigureObject = FigureObject & {
+    path: Point[];
 }
 
 type Gradient = {
     colors: Color[];
     angle: number;
+    type: "gradient";
 }
 
 type Image = {
-    url: string;
-    alt: string;
-    pos: Point;
-    size: Size;
+    src: string;
+    type: "image";
 }
 
 type Color = {
     value: string;
+    type: "color";
 }
 
 type Point = {
@@ -107,9 +105,9 @@ function setSlidePosition(slide: Slide, newPosition: number): Slide
     // TODO: нужно двигать все остальные слайды
 }
 
-function addSlideText(slide: Slide, newText: TextContent, coords: Point, size: Size): Slide
+function addSlideText(slide: Slide, newText: TextObject, coords: Point, size: Size): Slide
 {
-    const newContent: SlideContent = {
+    const newContent: SlideObject = {
         id: slide.content[slide.content.length - 1].id + 1,
         context: newText,
         pos: coords,
@@ -133,7 +131,7 @@ function deleteSlideText(slide: Slide): Slide
     }
 }
 
-function setContentPosition(content: SlideContent, newPos: Point): SlideContent
+function setContentPosition(content: SlideObject, newPos: Point): SlideObject
 {
     return {
         ...content,
@@ -141,7 +139,7 @@ function setContentPosition(content: SlideContent, newPos: Point): SlideContent
     }
 }
 
-function setContentSize(content: SlideContent, newSize: Size): SlideContent
+function setContentSize(content: SlideObject, newSize: Size): SlideObject
 {
     return {
         ...content,
@@ -149,7 +147,7 @@ function setContentSize(content: SlideContent, newSize: Size): SlideContent
     }
 }
 
-function setText(content: TextContent, newText: string): TextContent
+function setText(content: TextObject, newText: string): TextObject
 {
     return {
         ...content,
@@ -157,7 +155,7 @@ function setText(content: TextContent, newText: string): TextContent
     }
 }
 
-function setFontSize(content: TextContent, newFontSize: number): TextContent
+function setFontSize(content: TextObject, newFontSize: number): TextObject
 {
     return {
         ...content,
@@ -165,7 +163,7 @@ function setFontSize(content: TextContent, newFontSize: number): TextContent
     }
 }
 
-function setFontFamily(content: TextContent, newFontFamily: string): TextContent
+function setFontFamily(content: TextObject, newFontFamily: string): TextObject
 {
     return {
         ...content,
@@ -173,7 +171,7 @@ function setFontFamily(content: TextContent, newFontFamily: string): TextContent
     }
 }
 
-function setFontStyle(content: TextContent, newFontStyle: string): TextContent
+function setFontStyle(content: TextObject, newFontStyle: string): TextObject
 {
     return {
         ...content,
